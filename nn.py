@@ -13,11 +13,11 @@ class NN(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(17, 32, bias=True),
+            nn.Linear(17, 12, bias=True),
             nn.ReLU(),
-            nn.Linear(32, 32, bias=True),
-            nn.ReLU(),
-            nn.Linear(32, 1, bias=True),
+            nn.Linear(12, 12, bias=True),
+            nn.ReLU(),  
+            nn.Linear(12, 1, bias=True),
         )
 
     def forward(self, x):
