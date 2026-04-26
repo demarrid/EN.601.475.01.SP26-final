@@ -2,6 +2,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import torch
 from torch import nn
 from main import get_data
+import utils
 
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 
@@ -56,6 +57,7 @@ def test_loop(dataloader, model, loss_fn):
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
             pred = model(X)
+            test_loss += loss_fn(pred, y).item()
             probs = torch.sigmoid(pred)
             pred_labels = (probs > 0.5).float()
             correct += (pred_labels == y).float().sum().item()
@@ -97,6 +99,16 @@ def train_nn():
 
 def evaluate_fairness(model):
     X_train, X_test, y_train, y_test = get_data()
+    model.eval()
+    X_test_t = torch.tensor(X_test.values, dtype=torch.float32).to(device)
+    with torch.no_grad():
+        logits = model(X_test_t)
+        probs = torch.sigmoid(logits).cpu().numpy().ravel()
+        preds = (probs > 0.5).astype(int)
+    
+    gender_results = utils.evaluate_gender_fairness(X_test, y_test, preds, probs)
+    age_results = utils.evaluate_age_fairness(X_test, y_test, preds, probs)
+
 
 if __name__ == "__main__":
     model = train_nn()

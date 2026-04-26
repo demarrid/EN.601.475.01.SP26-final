@@ -1,8 +1,6 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-from main import get_data
-
 def evaluate_fairness(
     X_test_raw,
     y_test,
@@ -43,17 +41,27 @@ def evaluate_fairness(
     return fairness_df
 
 
-X_train, X_test, y_train, y_test = get_data()
-
-## Group data by ages for fairness check
-X_test_age = X_test.copy()
-X_test_age["Age_group"] = pd.cut(
-    X_test_age["Age"],
-    bins=[0, 18, 40, 65, 120],
-    labels=["0-17", "18-39", "40-64", "65+"],
-    right=False
+def evaluate_gender_fairness( X_test, y_test, y_pred, y_prob):
+    return evaluate_fairness(
+    X_test,
+    y_test,
+    y_pred,
+    y_prob,
+    group_col="Gender",
+    group_map={0: "Female", 1: "Male"}
 )
 
-
-
-def evaluate_gender_fairness(X_test_raw, y_test, y_pred, y_prob=None):
+def evaluate_age_fairness( X_test, y_test, y_pred, y_prob):
+    X_test["Age_group"] = pd.cut(
+        X_test["Age"],
+        bins=[0, 18, 40, 65, 120],
+        labels=["0-17", "18-39", "40-64", "65+"],
+        right=False
+    )
+    return evaluate_fairness(
+    X_test,
+    y_test,
+    y_pred,
+    y_prob,
+    group_col="Age_group"
+)
