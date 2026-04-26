@@ -44,8 +44,6 @@ def train_loop(dataloader, model, loss_fn, optimizer):
             loss, current = loss.item(), batch * batch_size + len(X)
             print(f"Loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
 
-
-
 def test_loop(dataloader, model, loss_fn):
     model.eval()
     #eval for batch normalziing and dropout
@@ -65,8 +63,6 @@ def test_loop(dataloader, model, loss_fn):
     test_loss /= num_batches
     correct /= size
     print(f"Test error: \n \tAccuracy:{(100*correct):>0.1f}%\n\tAverage loss: {test_loss:>8f} \n")
-
-print("Completed!")
 
 def train_nn():
     # train model parameters
@@ -95,7 +91,6 @@ def train_nn():
         test_loop(test_dataloader, model, loss_fn)
 
     return model
-
 
 def evaluate_fairness(model):
     X_train, X_test, y_train, y_test = get_data()
