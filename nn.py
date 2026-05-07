@@ -15,6 +15,7 @@ class NN(nn.Module):
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(17, 12, bias=True),
             nn.ReLU(),
+            nn.Dropout(0.2),
             nn.Linear(12, 12, bias=True),
             nn.ReLU(),  
             nn.Linear(12, 1, bias=True),
